@@ -37,3 +37,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('comments/{comment}/report', [CommentController::class, 'report'])->name('comments.report');
     Route::post('users/{user}/report', [UserController::class, 'reportUser'])->name('users.report');
 });
+
+require __DIR__.'/admin-auth.php';
+
+

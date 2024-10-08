@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-
+    protected $guard = 'admin';
     /**
      * The attributes that are mass assignable.
      *
@@ -45,16 +44,4 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    public function isAdmin()
-    {
-    return $this->is_admin;
-    }
-
-    public function reportUser(User $user)
-{
-    // Add your report logic here
-    return redirect()->back()->with('success', 'User reported.');
-}
-
 }
