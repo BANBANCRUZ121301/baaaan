@@ -29,15 +29,16 @@ Route::middleware('auth')->group(function () {
 // Authentication routes (login, register, etc.)
 require __DIR__.'/auth.php';
 
+require __DIR__.'/admin-auth.php';
+
 //admin
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    //Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 
     Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::post('comments/{comment}/report', [CommentController::class, 'report'])->name('comments.report');
     Route::post('users/{user}/report', [UserController::class, 'reportUser'])->name('users.report');
 });
 
-require __DIR__.'/admin-auth.php';
 
 

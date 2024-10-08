@@ -35,10 +35,14 @@
                        class="text-blue-600 font-bold hover:underline">
                        View Full Post
                     </a>
+
                     <div class="flex space-x-3">
                         <a href="{{ route('posts.edit', $post->id) }}" 
                            class="bg-blue-600 text-white font-bold py-1 px-3 rounded hover:bg-blue-500 transition duration-200">Edit
                         </a>
+
+                        <!-- Show delete button only if the user is an admin -->
+                        @if(Auth::check() && Auth::user()->is_admin === 1)
                         <form action="{{ route('posts.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
                             @csrf
                             @method('DELETE')
@@ -47,6 +51,7 @@
                                     Delete
                             </button>
                         </form>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -58,30 +63,37 @@
             {{ $posts->links('pagination::bootstrap-4') }}
         </div>
 
+        <!-- Comment Management (Show controls if the user is an admin) -->
         @if(Auth::check() && Auth::user()->role === 'admin')
-        <!-- Admin Controls -->
-        <div class="flex space-x-3 mt-5">
-            @foreach($posts as $post) <!-- Assuming you want admin controls for each post -->
-                @foreach($post->comments as $comment) <!-- Ensure you have access to comments for each post -->
-                    <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="bg-red-600 text-white font-bold py-1 px-3 rounded hover:bg-red-500">Delete Comment</button>
-                    </form>
-                    
-                    <form action="{{ route('comments.report', $comment->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="bg-yellow-600 text-white font-bold py-1 px-3 rounded hover:bg-yellow-500">Report Comment</button>
-                    </form>
+            <div class="flex space-x-3 mt-5">
+               
+                        <!-- Delete Comment Button (Only visible for admin users) -->
+                        <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="bg-red-600 text-white font-bold py-1 px-3 rounded hover:bg-red-500">
+                                Delete Comment
+                            </button>
+                        </form>
+                        @endif
+                        @foreach($posts as $post)
+                        @foreach($post->comments as $comment)
+                        <!-- Report Comment Button -->
+                        <form action="{{ route('comments.report', $comment->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="bg-yellow-600 text-white font-bold py-1 px-3 rounded hover:bg-yellow-500">Report Comment</button>
+                        </form>
 
-                    <form action="{{ route('users.report', $comment->user->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="bg-yellow-600 text-white font-bold py-1 px-3 rounded hover:bg-yellow-500">Report User</button>
-                    </form>
+                        <!-- Report User Button -->
+                        <form action="{{ route('users.report', $comment->user->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="bg-yellow-600 text-white font-bold py-1 px-3 rounded hover:bg-yellow-500">Report User</button>
+                        </form>
+                    @endforeach
                 @endforeach
-            @endforeach
-        </div>
-        @endif
+            </div>
+        
+
     @endif
 </div>
 @endsection
